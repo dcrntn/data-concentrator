@@ -14,7 +14,7 @@ This project is in a very early stage.
 ### Implemented
 1. Basic rAPI to read and write values.
 2. Modbus TCP "map" to read and write Modbus registers through the rAPI
-["data-concentrator-mb"](https://github.com/dcrntn/data-concentrator-mbtcp)
+["data-concentrator-mbtcp"](https://github.com/dcrntn/data-concentrator-mbtcp)
 
 ## Installation
 1. Clone or download this repo.
