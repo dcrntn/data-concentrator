@@ -15,7 +15,7 @@ This project is in a very early stage.
 1. Basic rAPI to read and write values.
 2. Modbus TCP "map" to read and write Modbus registers through the rAPI
 ["data-concentrator-mbtcp"](https://github.com/dcrntn/data-concentrator-mbtcp)
-3. Mqtt "map" to read and write mqtt topics (single valuse) through the rAPI["data-concentrator-mqtt"](https://github.com/dcrntn/data-concentrator-mqtt)
+3. Mqtt "map" to read and write mqtt topics (single valuse) through the rAPI ["data-concentrator-mqtt"](https://github.com/dcrntn/data-concentrator-mqtt)
 
 ### Inter communication between portocols
 Mapping multiple protocols to one rAPI "data node" makes it possible to do communication between protocols. 
