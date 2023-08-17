@@ -15,11 +15,23 @@ This project is in a very early stage.
 1. Basic rAPI to read and write values.
 2. Modbus TCP "map" to read and write Modbus registers through the rAPI
 ["data-concentrator-mbtcp"](https://github.com/dcrntn/data-concentrator-mbtcp)
+3. Mqtt "map" to read and write mqtt topics (single valuse) through the rAPI["data-concentrator-mqtt"](https://github.com/dcrntn/data-concentrator-mqtt)
+
+### Inter communication between portocols
+Mapping multiple protocols to one rAPI "data node" makes it possible to do communication between protocols. 
+
+#### Example
+A microcontroller writes values through mqtt to a specific "data node" (one value in the rAPI), a PLC through modbus reads the same "data node", thus a data transfer is present, even though the devices do not use the same comm. protocol. Nor they have any form of direct connection setup between each other.
+
+Simple data flow:
+MCU (MQTT)  -> Data concentrator -> PLC (MODBUS TCP)
+
+Achieved data transfer:
+MCU (MQTT) -> PLC (MODBUS TCP)
+
 
 ## Installation
-1. Clone or download this repo.
-2. Build with Cargo
-3. Run
+TBA
 
 ## Usage
 TBA
