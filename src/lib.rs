@@ -36,6 +36,15 @@ pub struct MbTcpData {
     mb_rw: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct MqttData {
+    mqtt_lock_to_uid: String,
+    mqtt_ip: String,
+    mqtt_topic: String,
+    mqtt_topic_modif: i32,
+    mqtt_rw: String,
+}
+
 // Generates a random 20 char long string used as a name or uid.
 fn rand_name() -> String {
     let rand_string: String = thread_rng()
@@ -121,6 +130,21 @@ pub async fn create_modbus_tcp(client: &Client, mb_tcp_data: Json<MbTcpData>) ->
         mb_port: format!("{}", mb_tcp_data.mb_port),
         mb_register: format!("{}", mb_tcp_data.mb_register),
         mb_rw: format!("{}", mb_tcp_data.mb_rw),
+    }];
+
+    collection.insert_many(docs, None).await.unwrap();
+    1
+}
+
+pub async fn create_mqtt(client: &Client, mqtt_data: Json<MqttData>) -> u64 {
+    let db = client.database("dconc");
+    let collection = db.collection::<MqttData>("mqttstuff");
+    let docs = vec![MqttData {
+        mqtt_lock_to_uid: format!("{}", mqtt_data.mqtt_lock_to_uid),
+        mqtt_ip: format!("{}", mqtt_data.mqtt_ip),
+        mqtt_topic: format!("{}", mqtt_data.mqtt_topic),
+        mqtt_topic_modif: mqtt_data.mqtt_topic_modif,
+        mqtt_rw: format!("{}", mqtt_data.mqtt_rw),
     }];
 
     collection.insert_many(docs, None).await.unwrap();

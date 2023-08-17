@@ -51,13 +51,23 @@ async fn create_modbus_tcp(
     Json(format!("{{'changed_count': '{}'}}", change_count))
 }
 
+#[post("/cmqtt", format = "json", data = "<mqtt_data>")]
+async fn crate_mqtt(
+    mng_client: &State<MngClient>,
+    mqtt_data: Json<data_concentrator::MqttData>,
+) -> Json<String> {
+    let change_count = data_concentrator::create_mqtt(&mng_client.mngc, mqtt_data).await;
+    Json(format!("{{'changed_count': '{}'}}", change_count))
+}
+
 #[launch]
 async fn rocket() -> _ {
     let client = Client::with_uri_str("mongodb://localhost:27017")
         .await
         .unwrap();
 
-    rocket::build()
-        .manage(MngClient { mngc: client })
-        .mount("/", routes![write, read, create, update, create_modbus_tcp])
+    rocket::build().manage(MngClient { mngc: client }).mount(
+        "/",
+        routes![write, read, create, update, create_modbus_tcp, crate_mqtt],
+    )
 }
