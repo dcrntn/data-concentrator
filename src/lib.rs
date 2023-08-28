@@ -1,5 +1,6 @@
+use futures::TryStreamExt;
 use mongodb::bson::Document;
-use mongodb::{bson::doc, bson::DateTime, Client};
+use mongodb::{bson::doc, bson::DateTime, options::FindOptions, Client};
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use rocket::serde::{json::Json, Deserialize, Serialize};
@@ -149,4 +150,18 @@ pub async fn create_mqtt(client: &Client, mqtt_data: Json<MqttData>) -> u64 {
 
     collection.insert_many(docs, None).await.unwrap();
     1
+}
+
+pub async fn read_all(client: &Client, coll_name: String) -> Vec<Document> {
+    let db = client.database("dconc");
+    let collection = db.collection::<Document>(&coll_name);
+    let find_options = FindOptions::builder().projection(doc! { "_id": 0 }).build();
+    let cursor = match collection.find(None, find_options).await {
+        Ok(cursor) => cursor,
+        Err(_) => return vec![],
+    };
+
+    let read_data = cursor.try_collect().await.unwrap_or_else(|_| vec![]);
+
+    read_data
 }

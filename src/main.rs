@@ -1,3 +1,4 @@
+use mongodb::bson::Document;
 use mongodb::Client;
 use rocket::serde::json::Json;
 use rocket::State;
@@ -60,6 +61,12 @@ async fn crate_mqtt(
     Json(format!("{{'changed_count': '{}'}}", change_count))
 }
 
+#[get("/getall/<typ>")]
+async fn get_all(mng_client: &State<MngClient>, typ: String) -> Json<Vec<Document>> {
+    let read_data = data_concentrator::read_all(&mng_client.mngc, typ).await;
+    Json(read_data)
+}
+
 #[launch]
 async fn rocket() -> _ {
     let client = Client::with_uri_str("mongodb://localhost:27017")
@@ -68,6 +75,14 @@ async fn rocket() -> _ {
 
     rocket::build().manage(MngClient { mngc: client }).mount(
         "/",
-        routes![write, read, create, update, create_modbus_tcp, crate_mqtt],
+        routes![
+            write,
+            read,
+            create,
+            update,
+            create_modbus_tcp,
+            crate_mqtt,
+            get_all
+        ],
     )
 }
