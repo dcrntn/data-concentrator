@@ -59,7 +59,6 @@ fn rand_name() -> String {
 async fn update_mdb(client: &Client, filter: Document, update: Document) -> u64 {
     let db = client.database("dconc");
     let collection = db.collection::<NodeVal>("bucket");
-    // Insert some books into the "mydb.books" collection.
     let result = collection.update_one(filter, update, None).await.unwrap();
 
     result.modified_count
@@ -79,7 +78,6 @@ pub async fn create_new_datanode(client: &Client) -> String {
         node_uid: node_uid,
     }];
 
-    // Insert some books into the "mydb.books" collection.
     collection.insert_many(docs, None).await.unwrap();
 
     ret_uid

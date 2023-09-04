@@ -1,8 +1,32 @@
 use mongodb::bson::Document;
 use mongodb::Client;
+use rocket::fairing::{Fairing, Info, Kind};
+use rocket::http::Header;
 use rocket::serde::json::Json;
 use rocket::State;
+use rocket::{Request, Response};
 
+pub struct CORS;
+
+#[rocket::async_trait]
+impl Fairing for CORS {
+    fn info(&self) -> Info {
+        Info {
+            name: "Add CORS headers to responses",
+            kind: Kind::Response,
+        }
+    }
+
+    async fn on_response<'r>(&self, _request: &'r Request<'_>, response: &mut Response<'r>) {
+        response.set_header(Header::new("Access-Control-Allow-Origin", "*"));
+        response.set_header(Header::new(
+            "Access-Control-Allow-Methods",
+            "POST, GET, PATCH, OPTIONS",
+        ));
+        response.set_header(Header::new("Access-Control-Allow-Headers", "*"));
+        response.set_header(Header::new("Access-Control-Allow-Credentials", "true"));
+    }
+}
 #[macro_use]
 extern crate rocket;
 
@@ -73,16 +97,19 @@ async fn rocket() -> _ {
         .await
         .unwrap();
 
-    rocket::build().manage(MngClient { mngc: client }).mount(
-        "/",
-        routes![
-            write,
-            read,
-            create,
-            update,
-            create_modbus_tcp,
-            crate_mqtt,
-            get_all
-        ],
-    )
+    rocket::build()
+        .attach(CORS)
+        .manage(MngClient { mngc: client })
+        .mount(
+            "/",
+            routes![
+                write,
+                read,
+                create,
+                update,
+                create_modbus_tcp,
+                crate_mqtt,
+                get_all
+            ],
+        )
 }
