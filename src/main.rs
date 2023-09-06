@@ -62,9 +62,10 @@ async fn read(mng_client: &State<MngClient>, uuid: &str) -> Json<data_concentrat
 }
 
 #[get("/c")]
-async fn create(mng_client: &State<MngClient>) -> Json<String> {
+async fn create(mng_client: &State<MngClient>) -> Json<data_concentrator::NewUidGet> {
     let new_name = data_concentrator::create_new_datanode(&mng_client.mngc).await;
-    Json(format!("{{'uid': '{}'}}", new_name))
+    let ret_struct = data_concentrator::NewUidGet { uid: new_name };
+    Json(ret_struct)
 }
 
 #[post("/cmbtcp", format = "json", data = "<mb_tcp_data>")]

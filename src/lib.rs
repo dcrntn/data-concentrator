@@ -46,6 +46,12 @@ pub struct MqttData {
     mqtt_rw: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+
+pub struct NewUidGet {
+    pub uid: String,
+}
+
 // Generates a random 20 char long string used as a name or uid.
 fn rand_name() -> String {
     let rand_string: String = thread_rng()
