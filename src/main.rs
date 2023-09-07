@@ -44,7 +44,7 @@ async fn write(
     Json(format!("{{'changed_count': '{}'}}", change_count))
 }
 
-#[post("/u", format = "json", data = "<node_data>")]
+#[post("/u", data = "<node_data>")]
 async fn update(
     mng_client: &State<MngClient>,
     node_data: Json<data_concentrator::UpdateData>,
