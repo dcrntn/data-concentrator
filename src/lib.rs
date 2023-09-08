@@ -42,7 +42,7 @@ pub struct MqttData {
     mqtt_lock_to_uid: String,
     mqtt_ip: String,
     mqtt_topic: String,
-    mqtt_topic_modif: i32,
+    mqtt_topic_modif: String,
     mqtt_rw: String,
 }
 
@@ -148,7 +148,7 @@ pub async fn create_mqtt(client: &Client, mqtt_data: Json<MqttData>) -> u64 {
         mqtt_lock_to_uid: format!("{}", mqtt_data.mqtt_lock_to_uid),
         mqtt_ip: format!("{}", mqtt_data.mqtt_ip),
         mqtt_topic: format!("{}", mqtt_data.mqtt_topic),
-        mqtt_topic_modif: mqtt_data.mqtt_topic_modif,
+        mqtt_topic_modif: format!("{}", mqtt_data.mqtt_topic_modif),
         mqtt_rw: format!("{}", mqtt_data.mqtt_rw),
     }];
 

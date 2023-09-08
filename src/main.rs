@@ -2,6 +2,7 @@ use mongodb::bson::Document;
 use mongodb::Client;
 use rocket::fairing::{Fairing, Info, Kind};
 use rocket::http::Header;
+use rocket::response::status;
 use rocket::serde::json::Json;
 use rocket::State;
 use rocket::{Request, Response};
@@ -44,7 +45,12 @@ async fn write(
     Json(format!("{{'changed_count': '{}'}}", change_count))
 }
 
-#[post("/u", data = "<node_data>")]
+#[options("/u")]
+async fn update_option() -> status::Accepted<String> {
+    status::Accepted(Some("ok".to_string()))
+}
+
+#[post("/u", format = "json", data = "<node_data>")]
 async fn update(
     mng_client: &State<MngClient>,
     node_data: Json<data_concentrator::UpdateData>,
@@ -68,6 +74,11 @@ async fn create(mng_client: &State<MngClient>) -> Json<data_concentrator::NewUid
     Json(ret_struct)
 }
 
+#[options("/cmbtcp")]
+async fn create_modbus_tcp_option() -> status::Accepted<String> {
+    status::Accepted(Some("ok".to_string()))
+}
+
 #[post("/cmbtcp", format = "json", data = "<mb_tcp_data>")]
 async fn create_modbus_tcp(
     mng_client: &State<MngClient>,
@@ -77,8 +88,13 @@ async fn create_modbus_tcp(
     Json(format!("{{'changed_count': '{}'}}", change_count))
 }
 
+#[options("/cmqtt")]
+async fn create_mqtt_option() -> status::Accepted<String> {
+    status::Accepted(Some("ok".to_string()))
+}
+
 #[post("/cmqtt", format = "json", data = "<mqtt_data>")]
-async fn crate_mqtt(
+async fn create_mqtt(
     mng_client: &State<MngClient>,
     mqtt_data: Json<data_concentrator::MqttData>,
 ) -> Json<String> {
@@ -108,8 +124,11 @@ async fn rocket() -> _ {
                 read,
                 create,
                 update,
+                update_option,
                 create_modbus_tcp,
-                crate_mqtt,
+                create_modbus_tcp_option,
+                create_mqtt,
+                create_mqtt_option,
                 get_all
             ],
         )
