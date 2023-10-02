@@ -36,6 +36,11 @@ struct MngClient {
     mngc: Client,
 }
 
+#[options("/w")]
+async fn write_option() -> status::Accepted<String> {
+    status::Accepted(Some("ok".to_string()))
+}
+
 #[post("/w", format = "json", data = "<node_data>")]
 async fn write(
     mng_client: &State<MngClient>,
@@ -121,6 +126,7 @@ async fn rocket() -> _ {
             "/",
             routes![
                 write,
+                write_option,
                 read,
                 create,
                 update,
